@@ -12,6 +12,8 @@ const app = express();
 
  //Create a custom GraphQL Object type
 
+ let message = "This is a message";
+
 const schema = buildSchema(`
 
     type Post{
@@ -32,7 +34,12 @@ const schema = buildSchema(`
         welcomeMessage(name: String, dayOfWeek: String!): String
         getUser: User
         getUsers: [User]
-        getPostsFromExternalAPI: [Post]
+        getPostsFromExternalAPI: [Post],
+        message: String
+    }
+
+    type Mutation{
+        setMessage(newMessage: String) : String 
     }
 
    
@@ -68,6 +75,13 @@ const root = {
     getPostsFromExternalAPI:async ()=>{
         const result = await axios.get('https://jsonplaceholder.typicode.com/posts');
         return result.data;
+    },
+    setMessage:({newMessage})=>{
+        message= newMessage;
+        return message;
+    },
+    message:()=>{
+        return message;
     }
 
 }
