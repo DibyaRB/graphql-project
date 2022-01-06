@@ -11,6 +11,7 @@ const app = express();
 const schema = buildSchema(`
     type Query {
         hello: String
+        welcomeMessage(name: String): String
     }
 `);
 
@@ -19,6 +20,10 @@ const schema = buildSchema(`
 const root = {
     hello: () =>{
         return "Hello World!";
+    },
+    welcomeMessage: (args) =>{
+        console.log(args);
+        return 'Hey Hows Life ' + " "+  args.name;
     }
 }
 
