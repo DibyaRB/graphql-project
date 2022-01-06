@@ -4,6 +4,8 @@ const {buildSchema} = require('graphql');
 
 const {graphqlHTTP} = require('express-graphql');
 
+const axios= require('axios');
+
 const app = express();
 
 //In graphql we have different scalar types ID, String, Int, Float, Boolean, List - []
@@ -11,6 +13,13 @@ const app = express();
  //Create a custom GraphQL Object type
 
 const schema = buildSchema(`
+
+    type Post{
+        userId: Int
+        id: Int
+        title: String
+        body: String
+    }
 
     type User{
         name: String
@@ -22,6 +31,8 @@ const schema = buildSchema(`
         hello: String
         welcomeMessage(name: String, dayOfWeek: String!): String
         getUser: User
+        getUsers: [User]
+        getPostsFromExternalAPI: [Post]
     }
 
    
@@ -49,7 +60,16 @@ const root = {
 
     getUser: ()=>{
             return user;
+    },
+    getUsers:()=>{
+        return [user]
+    },
+
+    getPostsFromExternalAPI:async ()=>{
+        const result = await axios.get('https://jsonplaceholder.typicode.com/posts');
+        return result.data;
     }
+
 }
 
 app.use('/graphql', graphqlHTTP({
